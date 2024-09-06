@@ -50,8 +50,7 @@ dTsep    = lagnd./Tsep;
 %% Plotting
 close all;
 sz = 100;
-fig1 = figure('units','normalized','outerposition',[0 0 1 1]);
-subplot(2,2,[1 4])
+fig1 = figure('units','normalized','outerposition',[0 0 1 1],'Position',[0.13,0.15,0.775,0.79734506148141]);
 for i = 1:numel(code)
     hold on
     if code(i) == 1
@@ -66,18 +65,42 @@ for i = 1:numel(code)
         h4 = [];
     end
 end
-scatter(0.4,0.15,100,'MarkerEdgeColor','none')%Dummy data to improve plotting
-plot([0 5],[0.45 1.82],'--','Color',[0.7 0.7 0.7]);
-plot([0 5],[0.31 0.65],'--','Color',[0.7 0.7 0.7]);
-grid on ; grid minor
+scatter(0.4,0.15,100,'MarkerEdgeColor','none')%Fake data to improve plotting
+% plot(([0 5]),([0.3 2.6]),'--','Color',[0.7 0.7 0.7]);
+% plot([0 5],[0.25 0.88],'--','Color',[0.7 0.7 0.7]);
 
+Hstlog1 = log10(Hst(1:10));
+Tstlog1 = log10(Tst(1:10));
+coeffs1 = polyfit(Hstlog1,Tstlog1,1);
+% log plot
+hold on;
+x1 = [0.4:0.1:6];
+coeffs1(1) = coeffs1(1)+0.12;%slope
+coeffs1(2) = coeffs1(2)+0.08;%intercept
+p1 = plot(x1,(10^coeffs1(2))*x1.^coeffs1(1),'--','Color',[0.6 0.6 0.6]);
+%--------------------------------------------------------------------------
+Hstlog2 = log10(Hst(40:46));
+Tstlog2 = log10(Tst(40:46));
+coeffs2 = polyfit(Hstlog2,Tstlog2,1);
+% log plot
+hold on;
+x2 = [0.4:0.1:6];
+coeffs2(1) = coeffs2(1)-0.01;%slope
+coeffs2(2) = coeffs2(2)-0.10; %intercept
+p2 = plot(x2,(10^coeffs2(2))*x2.^coeffs2(1),':','Color',[0.6 0.6 0.6]);
+legend([p1,p2],['$',num2str(coeffs1(2),'%.3f'),'*(H_{2}/H_{1})^{',num2str(coeffs1(1),'%.3f'),'}$'],...
+               ['$',num2str(coeffs2(2),'%.3f'),'*(H_{2}/H_{1})^{',num2str(coeffs2(1),'%.3f'),'}$'],'Location','southeast','Box','off')
+
+grid on ; grid minor
+% legend([h1,h2,h3,h4],'Wave-upwash interaction','Weak wave-backwash interaction','Strong wave-backwash interaction','No interaction',...
+%     'Orientation','horizontal','Location','northoutside','Fontsize',18,'NumColumns',2)
 ax = gca;
 ax.LineWidth = 1.5;
 set(gca,'TickDir','out')
 set(gca,'XScale','log')
 set(gca,'YScale','log')
-xlabel('$\rm H_{2}/H_{1}$');
-ylabel('$\rm T_{sep}/T_{swash}$');
+xlabel(['$\rm (H_{2}/H_{1})_{',loc,'}$']);
+ylabel(['$\rm (T_{sep}/T_{swash})_{',loc,'}$']);
 xlim([-0.1 5])
 ylim([-0.1 1.7])
 xticks([-0.1 0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0])
